@@ -43,7 +43,7 @@ export const orderService = {
   },
 
   async getByQrCode(qrCode: string): Promise<Order[]> {
-    const twelveHoursAgo = new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString();
+    const eightHoursAgo = new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString();
     
     const { data, error } = await supabase
       .from('orders')
@@ -55,8 +55,9 @@ export const orderService = {
         )
       `)
       .eq('qr_code', qrCode)
-      .gte('created_at', twelveHoursAgo)
-      .order('created_at', { ascending: false });
+      .gte('created_at', eightHoursAgo)
+      .order('created_at', { ascending: false })
+      .limit(2);
     if (error) throw error;
     return (data ?? []) as Order[];
   },

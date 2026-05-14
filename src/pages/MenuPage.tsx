@@ -9,6 +9,8 @@ import { CartPanel } from '@/components/menu/CartPanel';
 import { Skeleton } from '@/components/ui/Skeleton';
 import type { Drink } from '@/types';
 
+import { CustomerOrdersPanel } from '@/components/menu/CustomerOrdersPanel';
+
 function InvalidQr() {
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-6">
@@ -76,6 +78,8 @@ export function MenuPage() {
       {qr && <MenuHeader tableName={qr.table_name} qrCode={qr.qr_code} />}
 
       <main className="px-4 py-6 pb-32 max-w-lg mx-auto">
+        {qr && <CustomerOrdersPanel qrCode={qr.qr_code} />}
+
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
           <h1 className="text-2xl font-bold text-white">Menu</h1>
           <p className="text-white/40 text-sm mt-1">Aggiungi le tue bevande al carrello</p>

@@ -10,19 +10,9 @@ Make the app publicly accessible so the admin can manage orders/menus/QR codes f
 
 ## Steps
 
-1. **Create GitHub repo**
-   - Go to github.com → New repository
-   - Name: `drinkqr` (or similar), set to private if preferred
-   - Do NOT initialize with README (you have existing code)
+1. ~~**Create GitHub repo**~~ ✅ https://github.com/ergitoshkezi/QRcode
 
-2. **Push local code**
-   ```bash
-   git init
-   git add .
-   git commit -m "feat: initial commit"
-   git remote add origin https://github.com/<your-username>/drinkqr.git
-   git push -u origin main
-   ```
+2. ~~**Push local code**~~ ✅
 
 3. **Create Vercel account**
    - Go to vercel.com → Sign up (free, use GitHub login)

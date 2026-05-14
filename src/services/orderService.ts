@@ -42,6 +42,22 @@ export const orderService = {
     return (data ?? []) as Order[];
   },
 
+  async getByQrCode(qrCode: string): Promise<Order[]> {
+    const { data, error } = await supabase
+      .from('orders')
+      .select(`
+        *,
+        order_items (
+          *,
+          drink:drinks (*)
+        )
+      `)
+      .eq('qr_code', qrCode)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as Order[];
+  },
+
   async updateStatus(id: string, status: Order['status']): Promise<void> {
     const { error } = await supabase
       .from('orders')

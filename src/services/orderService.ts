@@ -44,7 +44,7 @@ export const orderService = {
 
   async getByQrCode(qrCode: string): Promise<Order[]> {
     const eightHoursAgo = new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString();
-    
+
     const { data, error } = await supabase
       .from('orders')
       .select(`
@@ -57,7 +57,7 @@ export const orderService = {
       .eq('qr_code', qrCode)
       .gte('created_at', eightHoursAgo)
       .order('created_at', { ascending: false })
-      .limit(10);
+      .limit(2);
     if (error) throw error;
     return (data ?? []) as Order[];
   },
@@ -70,21 +70,14 @@ export const orderService = {
     if (error) throw error;
   },
 
-  async deleteOrder(id: string): Promise<{ itemsCount: number; orderCount: number }> {
-    // Delete order items first
-    const { count: itemsCount, error: itemsError } = await supabase
-      .from('order_items')
-      .delete({ count: 'exact' })
-      .eq('order_id', id);
-    if (itemsError) throw itemsError;
-
-    // Then delete the order
+  async deleteOrder(id: string): Promise<{ orderCount: number }> {
+    // order_items will be deleted automatically due to ON DELETE CASCADE
     const { count: orderCount, error: orderError } = await supabase
       .from('orders')
       .delete({ count: 'exact' })
       .eq('id', id);
     if (orderError) throw orderError;
 
-    return { itemsCount: itemsCount || 0, orderCount: orderCount || 0 };
+    return { orderCount: orderCount || 0 };
   },
 };

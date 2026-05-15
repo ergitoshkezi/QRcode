@@ -120,11 +120,13 @@ INSERT INTO drinks (name, description, price, category, available) VALUES
   ('Aperol Spritz', 'Aperol, Prosecco, soda', 6.00, 'Cocktail', true),
   ('Red Bull', 'Energy drink 25cl', 4.00, 'Energy Drink', true),
   ('Spritz al limone', 'Limoncello, prosecco, menta', 5.50, 'Cocktail', true),
-  ('Heineken', 'Birra olandese 33cl', 3.80, 'Birre', true);
+  ('Heineken', 'Birra olandese 33cl', 3.80, 'Birre', true)
+ON CONFLICT DO NOTHING;
 
 INSERT INTO qr_codes (qr_code, table_name, active) VALUES
   ('QR001', 'Tavolo 1', true),
   ('QR002', 'Tavolo 2', true),
   ('QR003', 'Tavolo 3', true),
   ('QRBAR', 'Bancone Bar', true),
-  ('QRTEST', 'Test QR', true);
+  ('QRTEST', 'Test QR', true)
+ON CONFLICT (qr_code) DO NOTHING;

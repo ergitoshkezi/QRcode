@@ -1,14 +1,15 @@
-import { motion } from 'framer-motion';
-import { Clock, CheckCircle, Package, Truck, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Clock, CheckCircle, Package, Truck, Trash2, AlertTriangle, Loader2 } from 'lucide-react';
 import { useCustomerOrders } from '@/hooks/useCustomerOrders';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { orderService } from '@/services/orderService';
 
 const statusConfig = {
-  pending: { label: 'In attesa', color: 'text-yellow-400', bg: 'bg-yellow-400/10', icon: Clock },
-  confirmed: { label: 'In preparazione', color: 'text-blue-400', bg: 'bg-blue-400/10', icon: Package },
-  ready: { label: 'Pronto', color: 'text-green-400', bg: 'bg-green-400/10', icon: CheckCircle },
-  delivered: { label: 'Consegnato', color: 'text-white/40', bg: 'bg-white/5', icon: Truck },
+  pending:   { label: 'In attesa',       color: 'text-yellow-400', bg: 'bg-yellow-400/10', icon: Clock },
+  confirmed: { label: 'In preparazione', color: 'text-blue-400',   bg: 'bg-blue-400/10',   icon: Package },
+  ready:     { label: 'Pronto',          color: 'text-green-400',  bg: 'bg-green-400/10',  icon: CheckCircle },
+  delivered: { label: 'Consegnato',      color: 'text-white/40',   bg: 'bg-white/5',       icon: Truck },
 };
 
 function formatTime(dateStr: string) {
@@ -17,24 +18,19 @@ function formatTime(dateStr: string) {
 
 export function CustomerOrdersPanel({ qrCode }: { qrCode: string }) {
   const { orders, loading, refetch } = useCustomerOrders(qrCode);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  // Hide delivered orders after a while, or just show all recent ones. 
-  // For now, let's show all of them but maybe limit to today's or just the fetched ones.
-  // The query already orders by created_at descending.
-  
   const handleDelete = async (id: string) => {
-    if (window.confirm('Sei sicuro di voler annullare questo ordine?')) {
-      try {
-        alert('Inizio cancellazione ordine: ' + id);
-        const { itemsCount, orderCount } = await orderService.deleteOrder(id);
-        alert(`Risultato: ${orderCount} ordine eliminato e ${itemsCount} articoli eliminati.`);
-        await refetch();
-        window.location.reload(); // Forza il ricaricamento totale
-        alert('Lista ordini aggiornata!');
-      } catch (error: any) {
-        console.error('Failed to delete order:', error);
-        alert("ERRORE CANCELLAZIONE: " + (error.message || JSON.stringify(error)));
-      }
+    setDeletingId(id);
+    setConfirmId(null);
+    try {
+      await orderService.deleteOrder(id);
+      await refetch();
+    } catch {
+      // Silently fail — the order will reappear on next poll if delete failed
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -46,63 +42,107 @@ export function CustomerOrdersPanel({ qrCode }: { qrCode: string }) {
     );
   }
 
-  if (orders.length === 0) {
-    return null;
-  }
+  if (orders.length === 0) return null;
 
   return (
     <div className="mb-8">
-      <h2 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
-        I tuoi ordini recenti
-      </h2>
+      <h2 className="text-lg font-bold text-white mb-3">I tuoi ordini recenti</h2>
       <div className="space-y-3">
-        {orders.map((order) => {
-          const config = statusConfig[order.status];
-          const Icon = config.icon;
-          
-          return (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              key={order.id}
-              className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col gap-3"
-            >
-              <div className="flex justify-between items-start">
-                <div>
-                  <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${config.bg} ${config.color} mb-2`}>
-                    <Icon size={12} />
-                    {config.label}
-                  </div>
-                  <p className="text-white/40 text-xs">
-                    ID: {order.id.slice(0, 8)} · Ordinato alle {formatTime(order.created_at)}
-                  </p>
-                </div>
-                <div className="text-right flex flex-col items-end gap-2">
-                  <p className="text-white font-semibold text-sm">
-                    {order.order_items?.reduce((acc, item) => acc + item.quantity, 0)} articoli
-                  </p>
-                  {order.status === 'pending' && (
-                    <button
-                      onClick={() => handleDelete(order.id)}
-                      className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1 bg-red-400/10 px-2 py-1 rounded-md transition-colors"
-                    >
-                      <Trash2 size={12} />
-                      Annulla
-                    </button>
-                  )}
-                </div>
-              </div>
+        <AnimatePresence>
+          {orders.map((order) => {
+            const config = statusConfig[order.status];
+            const Icon = config.icon;
+            const isDeleting = deletingId === order.id;
+            const isConfirming = confirmId === order.id;
 
-              <div className="flex flex-wrap gap-2 mt-1">
-                {order.order_items?.map((item) => (
-                  <span key={item.id} className="text-xs text-white/60 bg-white/5 px-2 py-1 rounded-md">
-                    {item.quantity}x {item.drink?.name || 'Drink'}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
-          );
-        })}
+            return (
+              <motion.div
+                key={order.id}
+                layout
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: isDeleting ? 0.4 : 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, height: 0 }}
+                transition={{ duration: 0.25 }}
+                className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col gap-3 overflow-hidden"
+              >
+                {/* Header */}
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${config.bg} ${config.color} mb-2`}>
+                      <Icon size={12} />
+                      {config.label}
+                    </div>
+                    <p className="text-white/40 text-xs">
+                      Ordinato alle {formatTime(order.created_at)}
+                    </p>
+                  </div>
+                  <div className="text-right flex flex-col items-end gap-2">
+                    <p className="text-white font-semibold text-sm">
+                      {order.order_items?.reduce((acc, item) => acc + item.quantity, 0)} articoli
+                    </p>
+                    {order.status === 'pending' && !isDeleting && (
+                      <button
+                        onClick={() => setConfirmId(isConfirming ? null : order.id)}
+                        className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1 bg-red-400/10 px-2 py-1 rounded-md transition-colors"
+                      >
+                        <Trash2 size={12} />
+                        Annulla ordine
+                      </button>
+                    )}
+                    {isDeleting && (
+                      <span className="text-xs text-white/30 flex items-center gap-1">
+                        <Loader2 size={12} className="animate-spin" />
+                        Annullamento...
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Prodotti */}
+                <div className="flex flex-wrap gap-2">
+                  {order.order_items?.map((item) => (
+                    <span key={item.id} className="text-xs text-white/60 bg-white/5 px-2 py-1 rounded-md">
+                      {item.quantity}x {item.drink?.name || 'Drink'}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Dialogo conferma in-app */}
+                <AnimatePresence>
+                  {isConfirming && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="border-t border-red-500/20 pt-3"
+                    >
+                      <div className="flex items-start gap-2 mb-3">
+                        <AlertTriangle size={14} className="text-red-400 mt-0.5 shrink-0" />
+                        <p className="text-xs text-white/60">
+                          Sei sicuro di voler annullare questo ordine? L'operazione non può essere annullata.
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setConfirmId(null)}
+                          className="flex-1 text-xs text-white/50 bg-white/5 hover:bg-white/10 py-2 rounded-xl transition-colors"
+                        >
+                          No, tieni
+                        </button>
+                        <button
+                          onClick={() => handleDelete(order.id)}
+                          className="flex-1 text-xs text-red-400 bg-red-500/15 hover:bg-red-500/25 py-2 rounded-xl font-semibold transition-colors"
+                        >
+                          Sì, annulla ordine
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </div>
     </div>
   );

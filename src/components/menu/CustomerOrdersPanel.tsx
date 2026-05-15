@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, CheckCircle, Package, Truck, Trash2, AlertTriangle, Loader2 } from 'lucide-react';
-import { useCustomerOrders } from '@/hooks/useCustomerOrders';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { orderService } from '@/services/orderService';
+import type { Order } from '@/types';
 
 const statusConfig = {
   pending:   { label: 'In attesa',       color: 'text-yellow-400', bg: 'bg-yellow-400/10', icon: Clock },
@@ -16,8 +16,14 @@ function formatTime(dateStr: string) {
   return new Date(dateStr).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
 }
 
-export function CustomerOrdersPanel({ qrCode }: { qrCode: string }) {
-  const { orders, loading, refetch } = useCustomerOrders(qrCode);
+interface CustomerOrdersPanelProps {
+  qrCode: string;
+  orders: Order[];
+  loading: boolean;
+  refetch: () => void;
+}
+
+export function CustomerOrdersPanel({ qrCode: _qrCode, orders, loading, refetch }: CustomerOrdersPanelProps) {
   const [confirmId, setConfirmId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 

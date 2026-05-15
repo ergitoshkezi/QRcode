@@ -4,6 +4,7 @@ import { MapPin, AlertCircle } from 'lucide-react';
 import { useQrValidator } from '@/hooks/useQrValidator';
 import { useMenu } from '@/hooks/useMenu';
 import { useCart } from '@/hooks/useCart';
+import { useCustomerOrders } from '@/hooks/useCustomerOrders';
 import { CategorySection, MenuSkeleton } from '@/components/menu/CategorySection';
 import { CartPanel } from '@/components/menu/CartPanel';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -54,6 +55,7 @@ export function MenuPage() {
   const { qr, loading: qrLoading, invalid } = useQrValidator(qrId);
   const { byCategory, categories, loading: menuLoading } = useMenu();
   const { items, add, remove, clear, total, count } = useCart();
+  const { orders, loading: ordersLoading, refetch: refetchOrders } = useCustomerOrders(qr?.qr_code);
 
   const cartMap = items.reduce<Record<string, number>>(
     (acc, i) => ({ ...acc, [i.drink.id]: i.quantity }),
@@ -78,7 +80,14 @@ export function MenuPage() {
       {qr && <MenuHeader tableName={qr.table_name} qrCode={qr.qr_code} />}
 
       <main className="px-4 py-6 pb-32 max-w-lg mx-auto">
-        {qr && <CustomerOrdersPanel qrCode={qr.qr_code} />}
+        {qr && (
+          <CustomerOrdersPanel
+            qrCode={qr.qr_code}
+            orders={orders}
+            loading={ordersLoading}
+            refetch={refetchOrders}
+          />
+        )}
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
           <h1 className="text-2xl font-bold text-white">Menu</h1>
@@ -117,6 +126,7 @@ export function MenuPage() {
           }}
           onRemove={remove}
           onClear={clear}
+          onOrderPlaced={refetchOrders}
         />
       )}
     </div>

@@ -15,6 +15,7 @@ interface CartPanelProps {
   onAdd: (drinkId: string) => void;
   onRemove: (drinkId: string) => void;
   onClear: () => void;
+  onOrderPlaced?: () => void;
 }
 
 export function CartPanel({
@@ -25,6 +26,7 @@ export function CartPanel({
   onAdd,
   onRemove,
   onClear,
+  onOrderPlaced,
 }: CartPanelProps) {
   const [open, setOpen] = useState(false);
   const [notes, setNotes] = useState('');
@@ -40,6 +42,7 @@ export function CartPanel({
       setSubmitted(true);
       onClear();
       setOpen(false);
+      onOrderPlaced?.();
       toast('Ordine inviato! Il personale lo gestirà a breve 🎉');
     } catch {
       toast('Errore nell\'invio ordine. Riprova.', 'error');

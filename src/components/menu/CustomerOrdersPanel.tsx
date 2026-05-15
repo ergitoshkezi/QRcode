@@ -80,6 +80,12 @@ export function CustomerOrdersPanel({ qrCode }: { qrCode: string }) {
                     <p className="text-white font-semibold text-sm">
                       {order.order_items?.reduce((acc, item) => acc + item.quantity, 0)} articoli
                     </p>
+                    <p className="text-white/70 text-xs font-medium">
+                      Totale:{' '}
+                      <span className="text-white font-semibold">
+                        €{(order.order_items?.reduce((acc, item) => acc + item.quantity * (item.price_snapshot ?? 0), 0) ?? 0).toFixed(2)}
+                      </span>
+                    </p>
                     {order.status === 'pending' && !isDeleting && (
                       <button
                         onClick={() => setConfirmId(isConfirming ? null : order.id)}

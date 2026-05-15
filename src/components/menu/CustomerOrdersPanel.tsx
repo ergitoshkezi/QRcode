@@ -25,12 +25,14 @@ export function CustomerOrdersPanel({ qrCode }: { qrCode: string }) {
   const handleDelete = async (id: string) => {
     if (window.confirm('Sei sicuro di voler annullare questo ordine?')) {
       try {
-        console.log('Attempting to delete order:', id);
+        alert('Inizio cancellazione ordine: ' + id);
         await orderService.deleteOrder(id);
+        alert('Ordine cancellato correttamente dal database!');
         await refetch();
+        alert('Lista ordini aggiornata!');
       } catch (error: any) {
         console.error('Failed to delete order:', error);
-        alert("Errore durante l'annullamento: " + (error.message || JSON.stringify(error)));
+        alert("ERRORE CANCELLAZIONE: " + (error.message || JSON.stringify(error)));
       }
     }
   };

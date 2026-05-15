@@ -26,8 +26,8 @@ export function CustomerOrdersPanel({ qrCode }: { qrCode: string }) {
     if (window.confirm('Sei sicuro di voler annullare questo ordine?')) {
       try {
         alert('Inizio cancellazione ordine: ' + id);
-        await orderService.deleteOrder(id);
-        alert('Ordine cancellato correttamente dal database!');
+        const { itemsCount, orderCount } = await orderService.deleteOrder(id);
+        alert(`Risultato: ${orderCount} ordine eliminato e ${itemsCount} articoli eliminati.`);
         await refetch();
         alert('Lista ordini aggiornata!');
       } catch (error: any) {
@@ -73,7 +73,7 @@ export function CustomerOrdersPanel({ qrCode }: { qrCode: string }) {
                     {config.label}
                   </div>
                   <p className="text-white/40 text-xs">
-                    Ordinato alle {formatTime(order.created_at)}
+                    ID: {order.id.slice(0, 8)} · Ordinato alle {formatTime(order.created_at)}
                   </p>
                 </div>
                 <div className="text-right flex flex-col items-end gap-2">

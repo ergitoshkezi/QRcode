@@ -70,19 +70,21 @@ export const orderService = {
     if (error) throw error;
   },
 
-  async deleteOrder(id: string): Promise<void> {
-    // Delete order items first to avoid foreign key constraint errors
-    const { error: itemsError } = await supabase
+  async deleteOrder(id: string): Promise<{ itemsCount: number; orderCount: number }> {
+    // Delete order items first
+    const { count: itemsCount, error: itemsError } = await supabase
       .from('order_items')
-      .delete()
+      .delete({ count: 'exact' })
       .eq('order_id', id);
     if (itemsError) throw itemsError;
 
     // Then delete the order
-    const { error: orderError } = await supabase
+    const { count: orderCount, error: orderError } = await supabase
       .from('orders')
-      .delete()
+      .delete({ count: 'exact' })
       .eq('id', id);
     if (orderError) throw orderError;
+
+    return { itemsCount: itemsCount || 0, orderCount: orderCount || 0 };
   },
 };

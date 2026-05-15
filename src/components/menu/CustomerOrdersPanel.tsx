@@ -29,6 +29,7 @@ export function CustomerOrdersPanel({ qrCode }: { qrCode: string }) {
         const { itemsCount, orderCount } = await orderService.deleteOrder(id);
         alert(`Risultato: ${orderCount} ordine eliminato e ${itemsCount} articoli eliminati.`);
         await refetch();
+        window.location.reload(); // Forza il ricaricamento totale
         alert('Lista ordini aggiornata!');
       } catch (error: any) {
         console.error('Failed to delete order:', error);

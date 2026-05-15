@@ -57,7 +57,7 @@ export const orderService = {
       .eq('qr_code', qrCode)
       .gte('created_at', eightHoursAgo)
       .order('created_at', { ascending: false })
-      .limit(2);
+      .limit(10);
     if (error) throw error;
     return (data ?? []) as Order[];
   },

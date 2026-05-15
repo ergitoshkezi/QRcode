@@ -16,6 +16,11 @@ export function useRealtimeOrders() {
   useEffect(() => {
     fetchAll();
 
+    // Polling fallback every 28 seconds
+    const intervalId = setInterval(() => {
+      fetchAll();
+    }, 28000);
+
     // Supabase Realtime — listen to new orders + status changes
     const channel = supabase
       .channel('orders-realtime')
@@ -30,6 +35,7 @@ export function useRealtimeOrders() {
       .subscribe();
 
     return () => {
+      clearInterval(intervalId);
       supabase.removeChannel(channel);
     };
   }, [fetchAll]);

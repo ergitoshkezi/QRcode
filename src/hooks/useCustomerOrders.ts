@@ -27,6 +27,11 @@ export function useCustomerOrders(qrCode?: string) {
     
     fetchOrders();
 
+    // Polling fallback every 28 seconds
+    const intervalId = setInterval(() => {
+      fetchOrders();
+    }, 28000);
+
     // Listen to changes on the orders table
     const channel = supabase
       .channel(`orders-customer-${qrCode}`)
@@ -43,6 +48,7 @@ export function useCustomerOrders(qrCode?: string) {
       .subscribe();
 
     return () => {
+      clearInterval(intervalId);
       supabase.removeChannel(channel);
     };
   }, [qrCode, fetchOrders]);

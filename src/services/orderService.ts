@@ -71,10 +71,18 @@ export const orderService = {
   },
 
   async deleteOrder(id: string): Promise<void> {
-    const { error } = await supabase
+    // Delete order items first to avoid foreign key constraint errors
+    const { error: itemsError } = await supabase
+      .from('order_items')
+      .delete()
+      .eq('order_id', id);
+    if (itemsError) throw itemsError;
+
+    // Then delete the order
+    const { error: orderError } = await supabase
       .from('orders')
       .delete()
       .eq('id', id);
-    if (error) throw error;
+    if (orderError) throw orderError;
   },
 };

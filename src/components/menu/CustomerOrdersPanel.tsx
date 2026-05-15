@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
-import { Clock, CheckCircle, Package, Truck } from 'lucide-react';
+import { Clock, CheckCircle, Package, Truck, Trash2 } from 'lucide-react';
 import { useCustomerOrders } from '@/hooks/useCustomerOrders';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { orderService } from '@/services/orderService';
 
 const statusConfig = {
   pending: { label: 'In attesa', color: 'text-yellow-400', bg: 'bg-yellow-400/10', icon: Clock },
@@ -15,12 +16,24 @@ function formatTime(dateStr: string) {
 }
 
 export function CustomerOrdersPanel({ qrCode }: { qrCode: string }) {
-  const { orders, loading } = useCustomerOrders(qrCode);
+  const { orders, loading, refetch } = useCustomerOrders(qrCode);
 
   // Hide delivered orders after a while, or just show all recent ones. 
   // For now, let's show all of them but maybe limit to today's or just the fetched ones.
   // The query already orders by created_at descending.
   
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Sei sicuro di voler annullare questo ordine?')) {
+      try {
+        await orderService.deleteOrder(id);
+        refetch();
+      } catch (error) {
+        console.error('Failed to delete order:', error);
+        alert("Errore durante l'annullamento dell'ordine. Riprova.");
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="mb-8 space-y-3">
@@ -60,10 +73,19 @@ export function CustomerOrdersPanel({ qrCode }: { qrCode: string }) {
                     Ordinato alle {formatTime(order.created_at)}
                   </p>
                 </div>
-                <div className="text-right">
+                <div className="text-right flex flex-col items-end gap-2">
                   <p className="text-white font-semibold text-sm">
                     {order.order_items?.reduce((acc, item) => acc + item.quantity, 0)} articoli
                   </p>
+                  {order.status === 'pending' && (
+                    <button
+                      onClick={() => handleDelete(order.id)}
+                      className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1 bg-red-400/10 px-2 py-1 rounded-md transition-colors"
+                    >
+                      <Trash2 size={12} />
+                      Annulla
+                    </button>
+                  )}
                 </div>
               </div>
 

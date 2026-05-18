@@ -1,8 +1,12 @@
 import { motion } from 'framer-motion';
 import { QrCode, Smartphone, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
 export function LandingPage() {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen bg-black flex flex-col">
       {/* Hero */}
@@ -17,12 +21,12 @@ export function LandingPage() {
             <QrCode size={40} className="text-white" />
           </div>
           <h1 className="text-4xl font-bold tracking-tight text-white leading-tight">
-            Menu digitale
+            {t('landing.title')}
             <br />
-            <span className="text-white/40">via QR code</span>
+            <span className="text-white/40">{t('landing.subtitle')}</span>
           </h1>
           <p className="text-white/50 text-base leading-relaxed">
-            Scansiona il QR al tuo tavolo e scopri il menu completo del locale. Veloce, elegante, senza download.
+            {t('landing.description')}
           </p>
         </motion.div>
 
@@ -34,9 +38,9 @@ export function LandingPage() {
           className="mt-12 grid grid-cols-3 gap-4 w-full max-w-sm"
         >
           {[
-            { icon: Smartphone, label: 'Mobile first' },
-            { icon: Zap, label: 'Istantaneo' },
-            { icon: QrCode, label: 'Solo QR' },
+            { icon: Smartphone, label: t('landing.features.mobile') },
+            { icon: Zap, label: t('landing.features.instant') },
+            { icon: QrCode, label: t('landing.features.qrOnly') },
           ].map(({ icon: Icon, label }) => (
             <div
               key={label}
@@ -50,12 +54,13 @@ export function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="p-6 text-center border-t border-white/8">
+      <footer className="p-6 border-t border-white/8 flex flex-col items-center gap-3">
+        <LanguageSwitcher />
         <Link
           to="/admin"
           className="text-xs text-white/20 hover:text-white/40 transition-colors"
         >
-          Dashboard amministratore →
+          {t('landing.adminLink')}
         </Link>
       </footer>
     </div>

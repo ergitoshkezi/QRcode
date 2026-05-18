@@ -1,6 +1,8 @@
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { useQrValidator } from '@/hooks/useQrValidator';
 import { useMenu } from '@/hooks/useMenu';
 import { useCart } from '@/hooks/useCart';
@@ -13,6 +15,7 @@ import type { Drink } from '@/types';
 import { CustomerOrdersPanel } from '@/components/menu/CustomerOrdersPanel';
 
 function InvalidQr() {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-6">
       <motion.div
@@ -23,9 +26,9 @@ function InvalidQr() {
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 mb-2">
           <AlertCircle size={28} className="text-red-400" />
         </div>
-        <h2 className="text-xl font-bold text-white">QR non valido</h2>
+        <h2 className="text-xl font-bold text-white">{t('menu.invalidQr.title')}</h2>
         <p className="text-white/40 text-sm leading-relaxed">
-          Questo codice QR non è attivo o non esiste. Contatta il personale del locale.
+          {t('menu.invalidQr.description')}
         </p>
       </motion.div>
     </div>
@@ -37,7 +40,7 @@ function MenuHeader({ tableName, qrCode }: { tableName: string; qrCode: string }
     <motion.header
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="sticky top-0 z-10 backdrop-blur-xl bg-black/80 border-b border-white/8 px-5 py-4"
+      className="sticky top-0 z-10 backdrop-blur-xl bg-black/80 border-b border-white/8 px-5 py-4 flex items-center justify-between"
     >
       <div className="flex items-center gap-2">
         <MapPin size={16} className="text-white/40" />
@@ -46,11 +49,13 @@ function MenuHeader({ tableName, qrCode }: { tableName: string; qrCode: string }
           <p className="text-xs text-white/30">{qrCode}</p>
         </div>
       </div>
+      <LanguageSwitcher />
     </motion.header>
   );
 }
 
 export function MenuPage() {
+  const { t } = useTranslation();
   const { qrId } = useParams<{ qrId: string }>();
   const { qr, loading: qrLoading, invalid } = useQrValidator(qrId);
   const { byCategory, categories, loading: menuLoading } = useMenu();
@@ -90,8 +95,8 @@ export function MenuPage() {
         )}
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
-          <h1 className="text-2xl font-bold text-white">Menu</h1>
-          <p className="text-white/40 text-sm mt-1">Aggiungi le tue bevande al carrello</p>
+          <h1 className="text-2xl font-bold text-white">{t('menu.title')}</h1>
+          <p className="text-white/40 text-sm mt-1">{t('menu.subtitle')}</p>
         </motion.div>
 
         {menuLoading ? (
@@ -99,7 +104,7 @@ export function MenuPage() {
         ) : categories.length === 0 ? (
           <div className="text-center py-16 text-white/30">
             <p className="text-3xl mb-3">🍽️</p>
-            <p>Menu non ancora disponibile</p>
+            <p>{t('menu.empty')}</p>
           </div>
         ) : (
           categories.map((cat) => (

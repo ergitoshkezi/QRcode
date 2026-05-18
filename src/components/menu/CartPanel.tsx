@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { ShoppingCart, Plus, Minus, X, ChevronUp, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { formatPrice } from '@/lib/utils';
@@ -28,6 +29,7 @@ export function CartPanel({
   onClear,
   onOrderPlaced,
 }: CartPanelProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -43,9 +45,9 @@ export function CartPanel({
       onClear();
       setOpen(false);
       onOrderPlaced?.();
-      toast('Ordine inviato! Il personale lo gestirà a breve 🎉');
+      toast(t('cart.toast.success'));
     } catch {
-      toast('Errore nell\'invio ordine. Riprova.', 'error');
+      toast(t('cart.toast.error'), 'error');
     } finally {
       setSubmitting(false);
     }
@@ -63,7 +65,7 @@ export function CartPanel({
         className="fixed bottom-6 right-4 z-40 flex items-center gap-2 bg-white text-black px-4 py-3 rounded-2xl shadow-2xl font-semibold text-sm"
       >
         <ShoppingCart size={16} />
-        <span>{count} {count === 1 ? 'articolo' : 'articoli'}</span>
+        <span>{t('cart.items', { count })}</span>
         <span className="ml-1 font-bold">{formatPrice(total)}</span>
       </motion.button>
 
@@ -94,7 +96,7 @@ export function CartPanel({
               </div>
 
               <div className="flex items-center justify-between px-5 py-3 border-b border-white/8">
-                <h2 className="font-bold text-white text-lg">Il tuo ordine</h2>
+                <h2 className="font-bold text-white text-lg">{t('cart.title')}</h2>
                 <button onClick={() => setOpen(false)} className="text-white/40 hover:text-white">
                   <ChevronUp size={20} />
                 </button>
@@ -106,7 +108,7 @@ export function CartPanel({
                   <div key={drink.id} className="flex items-center gap-3">
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-white truncate">{drink.name}</p>
-                      <p className="text-xs text-white/40">{formatPrice(drink.price)} cad.</p>
+                      <p className="text-xs text-white/40">{formatPrice(drink.price)} {t('cart.each')}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <button
@@ -140,7 +142,7 @@ export function CartPanel({
                   <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    placeholder="Note (allergie, preferenze...)"
+                    placeholder={t('cart.notes')}
                     rows={2}
                     className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 resize-none"
                   />
@@ -150,7 +152,7 @@ export function CartPanel({
               {/* Footer */}
               <div className="px-5 pb-8 pt-3 border-t border-white/8 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-white/60 text-sm">Totale</span>
+                  <span className="text-white/60 text-sm">{t('cart.total')}</span>
                   <span className="text-xl font-bold text-white">{formatPrice(total)}</span>
                 </div>
                 <Button
@@ -160,13 +162,13 @@ export function CartPanel({
                   className="w-full"
                 >
                   {submitting ? (
-                    <><Loader2 size={16} className="mr-2 animate-spin" /> Invio ordine...</>
+                    <><Loader2 size={16} className="mr-2 animate-spin" /> {t('cart.submitting')}</>
                   ) : (
-                    'Invia ordine 🚀'
+                    t('cart.submit')
                   )}
                 </Button>
                 <p className="text-center text-xs text-white/30">
-                  Il pagamento avviene fisicamente al tavolo
+                  {t('cart.payment')}
                 </p>
               </div>
             </motion.div>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Clock, CheckCircle, Package, Truck, Trash2, AlertTriangle, Loader2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { orderService } from '@/services/orderService';
@@ -12,8 +13,8 @@ const statusConfig = {
   delivered: { label: 'Consegnato',      color: 'text-white/40',   bg: 'bg-white/5',       icon: Truck },
 };
 
-function formatTime(dateStr: string) {
-  return new Date(dateStr).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+function formatTime(dateStr: string, locale: string = 'it-IT') {
+  return new Date(dateStr).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
 }
 
 interface CustomerOrdersPanelProps {
@@ -24,6 +25,7 @@ interface CustomerOrdersPanelProps {
 }
 
 export function CustomerOrdersPanel({ qrCode: _qrCode, orders, loading, refetch }: CustomerOrdersPanelProps) {
+  const { t, i18n } = useTranslation();
   const [confirmId, setConfirmId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -52,7 +54,7 @@ export function CustomerOrdersPanel({ qrCode: _qrCode, orders, loading, refetch 
 
   return (
     <div className="mb-8">
-      <h2 className="text-lg font-bold text-white mb-3">I tuoi ordini recenti</h2>
+      <h2 className="text-lg font-bold text-white mb-3">{t('orders.title')}</h2>
       <div className="space-y-3">
         <AnimatePresence>
           {orders.map((order) => {
@@ -60,6 +62,7 @@ export function CustomerOrdersPanel({ qrCode: _qrCode, orders, loading, refetch 
             const Icon = config.icon;
             const isDeleting = deletingId === order.id;
             const isConfirming = confirmId === order.id;
+            const itemCount = order.order_items?.reduce((acc, item) => acc + item.quantity, 0) ?? 0;
 
             return (
               <motion.div
@@ -76,18 +79,18 @@ export function CustomerOrdersPanel({ qrCode: _qrCode, orders, loading, refetch 
                   <div>
                     <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${config.bg} ${config.color} mb-2`}>
                       <Icon size={12} />
-                      {config.label}
+                      {t(`orders.status.${order.status}`)}
                     </div>
                     <p className="text-white/40 text-xs">
-                      Ordinato alle {formatTime(order.created_at)}
+                      {t('orders.orderedAt', { time: formatTime(order.created_at, i18n.language) })}
                     </p>
                   </div>
                   <div className="text-right flex flex-col items-end gap-2">
                     <p className="text-white font-semibold text-sm">
-                      {order.order_items?.reduce((acc, item) => acc + item.quantity, 0)} articoli
+                      {t('orders.items', { count: itemCount })}
                     </p>
                     <p className="text-white/70 text-xs font-medium">
-                      Totale:{' '}
+                      {t('orders.total')}:{' '}
                       <span className="text-white font-semibold">
                         €{(order.order_items?.reduce((acc, item) => acc + item.quantity * (item.price_snapshot ?? 0), 0) ?? 0).toFixed(2)}
                       </span>
@@ -98,13 +101,13 @@ export function CustomerOrdersPanel({ qrCode: _qrCode, orders, loading, refetch 
                         className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1 bg-red-400/10 px-2 py-1 rounded-md transition-colors"
                       >
                         <Trash2 size={12} />
-                        Annulla ordine
+                        {t('orders.cancel')}
                       </button>
                     )}
                     {isDeleting && (
                       <span className="text-xs text-white/30 flex items-center gap-1">
                         <Loader2 size={12} className="animate-spin" />
-                        Annullamento...
+                        {t('orders.cancelling')}
                       </span>
                     )}
                   </div>
@@ -131,7 +134,7 @@ export function CustomerOrdersPanel({ qrCode: _qrCode, orders, loading, refetch 
                       <div className="flex items-start gap-2 mb-3">
                         <AlertTriangle size={14} className="text-red-400 mt-0.5 shrink-0" />
                         <p className="text-xs text-white/60">
-                          Sei sicuro di voler annullare questo ordine? L'operazione non può essere annullata.
+                          {t('orders.confirmText')}
                         </p>
                       </div>
                       <div className="flex gap-2">
@@ -139,13 +142,13 @@ export function CustomerOrdersPanel({ qrCode: _qrCode, orders, loading, refetch 
                           onClick={() => setConfirmId(null)}
                           className="flex-1 text-xs text-white/50 bg-white/5 hover:bg-white/10 py-2 rounded-xl transition-colors"
                         >
-                          No, tieni
+                          {t('orders.no')}
                         </button>
                         <button
                           onClick={() => handleDelete(order.id)}
                           className="flex-1 text-xs text-red-400 bg-red-500/15 hover:bg-red-500/25 py-2 rounded-xl font-semibold transition-colors"
                         >
-                          Sì, annulla ordine
+                          {t('orders.yes')}
                         </button>
                       </div>
                     </motion.div>

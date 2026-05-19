@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ShoppingCart, Plus, Minus, X, ChevronUp, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, translateDbText } from '@/lib/utils';
 import { orderService } from '@/services/orderService';
 import { toast } from '@/components/ui/Toast';
 import type { CartItem } from '@/types';
@@ -29,7 +29,7 @@ export function CartPanel({
   onClear,
   onOrderPlaced,
 }: CartPanelProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -107,7 +107,9 @@ export function CartPanel({
                 {items.map(({ drink, quantity }) => (
                   <div key={drink.id} className="flex items-center gap-3">
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-white truncate">{drink.name}</p>
+                      <p className="text-sm font-medium text-white truncate">
+                        {t(translateDbText(drink.name, i18n.language))}
+                      </p>
                       <p className="text-xs text-white/40">{formatPrice(drink.price)} {t('cart.each')}</p>
                     </div>
                     <div className="flex items-center gap-2">

@@ -81,6 +81,26 @@ const en = {
   'Birra alla spina': 'Draft Beer',
   'Vino Rosso': 'Red Wine',
   'Vino Bianco': 'White Wine',
+
+  // Database Drink Names
+  'Coca Cola': 'Coca Cola',
+  'Acqua naturale': 'Still Water',
+  'Acqua frizzante': 'Sparkling Water',
+  'Peroni': 'Peroni',
+  'Aperol Spritz': 'Aperol Spritz',
+  'Red Bull': 'Red Bull',
+  'Spritz al limone': 'Lemon Spritz',
+  'Heineken': 'Heineken',
+
+  // Database Drink Descriptions
+  'La classica bibita gassata': 'The classic fizzy drink',
+  'Acqua minerale naturale 50cl': 'Still mineral water 50cl',
+  'Acqua minerale frizzante 50cl': 'Sparkling mineral water 50cl',
+  'Birra italiana in bottiglia 33cl': 'Italian bottled beer 33cl',
+  'Aperol, Prosecco, soda': 'Aperol, Prosecco, soda',
+  'Energy drink 25cl': 'Energy drink 25cl',
+  'Limoncello, prosecco, menta': 'Limoncello, prosecco, mint',
+  'Birra olandese 33cl': 'Dutch bottled beer 33cl',
 } as const;
 
 export default en;

@@ -81,6 +81,26 @@ const it = {
   'Birra alla spina': 'Birra alla spina',
   'Vino Rosso': 'Vino Rosso',
   'Vino Bianco': 'Vino Bianco',
+
+  // Database Drink Names
+  'Coca Cola': 'Coca Cola',
+  'Acqua naturale': 'Acqua naturale',
+  'Acqua frizzante': 'Acqua frizzante',
+  'Peroni': 'Peroni',
+  'Aperol Spritz': 'Aperol Spritz',
+  'Red Bull': 'Red Bull',
+  'Spritz al limone': 'Spritz al limone',
+  'Heineken': 'Heineken',
+
+  // Database Drink Descriptions
+  'La classica bibita gassata': 'La classica bibita gassata',
+  'Acqua minerale naturale 50cl': 'Acqua minerale naturale 50cl',
+  'Acqua minerale frizzante 50cl': 'Acqua minerale frizzante 50cl',
+  'Birra italiana in bottiglia 33cl': 'Birra italiana in bottiglia 33cl',
+  'Aperol, Prosecco, soda': 'Aperol, Prosecco, soda',
+  'Energy drink 25cl': 'Energy drink 25cl',
+  'Limoncello, prosecco, menta': 'Limoncello, prosecco, menta',
+  'Birra olandese 33cl': 'Birra olandese 33cl',
 } as const;
 
 export default it;

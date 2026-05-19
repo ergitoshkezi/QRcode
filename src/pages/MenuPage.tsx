@@ -58,7 +58,7 @@ export function MenuPage() {
   const { t } = useTranslation();
   const { qrId } = useParams<{ qrId: string }>();
   const { qr, loading: qrLoading, invalid } = useQrValidator(qrId);
-  const { byCategory, categories, loading: menuLoading } = useMenu();
+  const { byCategory, categories, rawDrinks, loading: menuLoading } = useMenu();
   const { items, add, remove, clear, total, count } = useCart();
   const { orders, loading: ordersLoading, refetch: refetchOrders } = useCustomerOrders(qr?.qr_code);
 
@@ -67,7 +67,10 @@ export function MenuPage() {
     {}
   );
 
-  const handleAdd = (drink: Drink) => add(drink);
+  const handleAdd = (drink: Drink) => {
+    const rawDrink = rawDrinks?.find((d) => d.id === drink.id) || drink;
+    add(rawDrink);
+  };
 
   if (qrLoading) {
     return (

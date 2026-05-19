@@ -37,5 +37,5 @@ export function useMenu() {
 
   const categories = Object.keys(byCategory) as DrinkCategory[];
 
-  return { drinks, byCategory, categories, loading, error };
+  return { drinks, byCategory, categories, rawDrinks, loading, error };
 }

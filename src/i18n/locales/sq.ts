@@ -81,6 +81,26 @@ const sq = {
   'Birra alla spina': 'Birrë me krikë',
   'Vino Rosso': 'Verë e kuqe',
   'Vino Bianco': 'Verë e bardhë',
+
+  // Database Drink Names
+  'Coca Cola': 'Koka Kola',
+  'Acqua naturale': 'Ujë natyral',
+  'Acqua frizzante': 'Ujë me gaz',
+  'Peroni': 'Peroni',
+  'Aperol Spritz': 'Aperol Spritz',
+  'Red Bull': 'Red Bull',
+  'Spritz al limone': 'Spritz me limon',
+  'Heineken': 'Heineken',
+
+  // Database Drink Descriptions
+  'La classica bibita gassata': 'Pija klasike e gazuar',
+  'Acqua minerale naturale 50cl': 'Ujë mineral natyral 50cl',
+  'Acqua minerale frizzante 50cl': 'Ujë mineral me gaz 50cl',
+  'Birra italiana in bottiglia 33cl': 'Birrë italiane në shishe 33cl',
+  'Aperol, Prosecco, soda': 'Aperol, Proseko, sodë',
+  'Energy drink 25cl': 'Pije energjike 25cl',
+  'Limoncello, prosecco, menta': 'Limonçelo, proseko, mente',
+  'Birra olandese 33cl': 'Birrë holandeze 33cl',
 } as const;
 
 export default sq;

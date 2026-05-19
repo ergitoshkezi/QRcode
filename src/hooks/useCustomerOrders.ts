@@ -1,11 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { orderService } from '@/services/orderService';
+import { useTranslation } from 'react-i18next';
+import { translateDbText } from '@/lib/utils';
 import type { Order } from '@/types';
 
 export function useCustomerOrders(qrCode?: string) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t, i18n } = useTranslation();
 
   const fetchOrders = useCallback(async () => {
     if (!qrCode) return;
@@ -39,9 +42,6 @@ export function useCustomerOrders(qrCode?: string) {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'orders' },
         () => {
-          // Verify if this order belongs to our qrCode, or just refetch.
-          // Since we might not have qr_code in the payload if it wasn't changed,
-          // it's safest to just refetch to get updated status and full relations.
           fetchOrders();
         }
       )
@@ -53,5 +53,21 @@ export function useCustomerOrders(qrCode?: string) {
     };
   }, [qrCode, fetchOrders]);
 
-  return { orders, loading, refetch: fetchOrders };
+  const translatedOrders = orders.map((order) => ({
+    ...order,
+    order_items: order.order_items?.map((item) => ({
+      ...item,
+      drink: item.drink
+        ? {
+            ...item.drink,
+            name: t(translateDbText(item.drink.name, i18n.language)),
+            description: item.drink.description
+              ? t(translateDbText(item.drink.description, i18n.language))
+              : item.drink.description,
+          }
+        : item.drink,
+    })),
+  }));
+
+  return { orders: translatedOrders, loading, refetch: fetchOrders };
 }

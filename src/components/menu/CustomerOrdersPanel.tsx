@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Clock, CheckCircle, Package, Truck, Trash2, AlertTriangle, Loader2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { orderService } from '@/services/orderService';
-import { translateDbText } from '@/lib/utils';
 import type { Order } from '@/types';
 
 const statusConfig = {
@@ -118,7 +117,7 @@ export function CustomerOrdersPanel({ qrCode: _qrCode, orders, loading, refetch 
                 <div className="flex flex-wrap gap-2">
                   {order.order_items?.map((item) => (
                     <span key={item.id} className="text-xs text-white/60 bg-white/5 px-2 py-1 rounded-md">
-                      {item.quantity}x {item.drink?.name ? t(translateDbText(item.drink.name, i18n.language)) : t('orders.defaultDrinkName', 'Drink')}
+                      {item.quantity}x {item.drink?.name ?? t('orders.defaultDrinkName', 'Drink')}
                     </span>
                   ))}
                 </div>

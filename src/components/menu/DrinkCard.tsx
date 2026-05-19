@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { formatPrice, translateDbText } from '@/lib/utils';
+import { formatPrice } from '@/lib/utils';
 import type { Drink } from '@/types';
 
 interface DrinkCardProps {
@@ -19,10 +19,7 @@ const CATEGORY_EMOJI: Record<string, string> = {
 };
 
 export function DrinkCard({ drink, onAdd, cartQuantity = 0 }: DrinkCardProps) {
-  const { t, i18n } = useTranslation();
-  
-  const displayName = t(translateDbText(drink.name, i18n.language));
-  const displayDescription = drink.description ? t(translateDbText(drink.description, i18n.language)) : '';
+  const { t } = useTranslation();
 
   return (
     <motion.div
@@ -34,7 +31,7 @@ export function DrinkCard({ drink, onAdd, cartQuantity = 0 }: DrinkCardProps) {
         {drink.image_url ? (
           <img
             src={drink.image_url}
-            alt={displayName}
+            alt={drink.name}
             className="w-full h-full object-cover"
             loading="lazy"
           />
@@ -59,10 +56,10 @@ export function DrinkCard({ drink, onAdd, cartQuantity = 0 }: DrinkCardProps) {
       </div>
 
       <div className="p-4">
-        <h3 className="font-semibold text-white text-base leading-tight">{displayName}</h3>
-        {displayDescription && (
+        <h3 className="font-semibold text-white text-base leading-tight">{drink.name}</h3>
+        {drink.description && (
           <p className="mt-1 text-sm text-white/50 line-clamp-2 leading-relaxed">
-            {displayDescription}
+            {drink.description}
           </p>
         )}
         <div className="mt-3 flex items-center justify-between">

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { formatPrice } from '@/lib/utils';
 import type { Drink } from '@/types';
 
@@ -18,6 +19,7 @@ const CATEGORY_EMOJI: Record<string, string> = {
 };
 
 export function DrinkCard({ drink, onAdd, cartQuantity = 0 }: DrinkCardProps) {
+  const { t } = useTranslation();
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -28,7 +30,7 @@ export function DrinkCard({ drink, onAdd, cartQuantity = 0 }: DrinkCardProps) {
         {drink.image_url ? (
           <img
             src={drink.image_url}
-            alt={drink.name}
+            alt={t(drink.name)}
             className="w-full h-full object-cover"
             loading="lazy"
           />
@@ -40,7 +42,7 @@ export function DrinkCard({ drink, onAdd, cartQuantity = 0 }: DrinkCardProps) {
         {!drink.available && (
           <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
             <span className="text-sm font-medium text-white/60 bg-black/50 px-3 py-1 rounded-full">
-              Non disponibile
+              {t('common.unavailable')}
             </span>
           </div>
         )}
@@ -53,10 +55,10 @@ export function DrinkCard({ drink, onAdd, cartQuantity = 0 }: DrinkCardProps) {
       </div>
 
       <div className="p-4">
-        <h3 className="font-semibold text-white text-base leading-tight">{drink.name}</h3>
+        <h3 className="font-semibold text-white text-base leading-tight">{t(drink.name)}</h3>
         {drink.description && (
           <p className="mt-1 text-sm text-white/50 line-clamp-2 leading-relaxed">
-            {drink.description}
+            {t(drink.description)}
           </p>
         )}
         <div className="mt-3 flex items-center justify-between">
@@ -69,12 +71,12 @@ export function DrinkCard({ drink, onAdd, cartQuantity = 0 }: DrinkCardProps) {
               className="flex items-center gap-1.5 bg-white text-black text-xs font-semibold px-3 py-1.5 rounded-xl hover:bg-white/90 active:scale-95 transition-all"
             >
               <Plus size={12} />
-              Aggiungi
+              {t('common.add')}
             </button>
           )}
           {!onAdd && (
             <span className="text-xs text-white/40 bg-white/5 px-2.5 py-1 rounded-full border border-white/8">
-              {drink.category}
+              {t(`categories.${drink.category}`, drink.category)}
             </span>
           )}
         </div>

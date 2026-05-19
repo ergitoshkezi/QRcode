@@ -59,6 +59,28 @@ const sq = {
       delivered: 'Dorëzuar',
     },
   },
+
+  // Common UI elements
+  common: {
+    add: 'Shto',
+    unavailable: 'Jo i disponueshëm',
+  },
+
+  // Categories
+  categories: {
+    'Soft Drinks': 'Pije jo-alkoolike',
+    'Birre': 'Birra',
+    'Cocktail': 'Koktej',
+    'Acqua': 'Ujë',
+    'Energy Drink': 'Pije energjike',
+  },
+
+  // Standard Drink translations (optional dynamic fallbacks)
+  'Acqua Naturale': 'Ujë pa gaz',
+  'Acqua Frizzante': 'Ujë me gaz',
+  'Birra alla spina': 'Birrë me krikë',
+  'Vino Rosso': 'Verë e kuqe',
+  'Vino Bianco': 'Verë e bardhë',
 } as const;
 
 export default sq;

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { DrinkCard } from './DrinkCard';
+import { useTranslation } from 'react-i18next';
 import { DrinkCardSkeleton } from '@/components/ui/Skeleton';
 import type { Drink, DrinkCategory } from '@/types';
 
@@ -19,6 +20,7 @@ const CATEGORY_EMOJI: Record<string, string> = {
 };
 
 export function CategorySection({ category, drinks, onAdd, cartMap = {} }: CategorySectionProps) {
+  const { t } = useTranslation();
   return (
     <section className="mb-8">
       <motion.div
@@ -27,7 +29,7 @@ export function CategorySection({ category, drinks, onAdd, cartMap = {} }: Categ
         className="flex items-center gap-2 mb-4"
       >
         <span className="text-2xl">{CATEGORY_EMOJI[category]}</span>
-        <h2 className="text-lg font-bold text-white">{category}</h2>
+        <h2 className="text-lg font-bold text-white">{t(`categories.${category}`, category)}</h2>
         <span className="text-xs text-white/30 ml-1">({drinks.length})</span>
       </motion.div>
       <div className="grid grid-cols-2 gap-3">

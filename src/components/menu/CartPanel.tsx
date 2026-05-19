@@ -107,7 +107,7 @@ export function CartPanel({
                 {items.map(({ drink, quantity }) => (
                   <div key={drink.id} className="flex items-center gap-3">
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-white truncate">{drink.name}</p>
+                      <p className="text-sm font-medium text-white truncate">{t(drink.name)}</p>
                       <p className="text-xs text-white/40">{formatPrice(drink.price)} {t('cart.each')}</p>
                     </div>
                     <div className="flex items-center gap-2">

@@ -117,7 +117,7 @@ export function CustomerOrdersPanel({ qrCode: _qrCode, orders, loading, refetch 
                 <div className="flex flex-wrap gap-2">
                   {order.order_items?.map((item) => (
                     <span key={item.id} className="text-xs text-white/60 bg-white/5 px-2 py-1 rounded-md">
-                      {item.quantity}x {item.drink?.name || 'Drink'}
+                      {item.quantity}x {item.drink?.name ? t(item.drink.name) : t('orders.defaultDrinkName', 'Drink')}
                     </span>
                   ))}
                 </div>

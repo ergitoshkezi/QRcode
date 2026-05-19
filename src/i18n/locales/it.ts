@@ -59,6 +59,28 @@ const it = {
       delivered: 'Consegnato',
     },
   },
+
+  // Common UI elements
+  common: {
+    add: 'Aggiungi',
+    unavailable: 'Non disponibile',
+  },
+
+  // Categories
+  categories: {
+    'Soft Drinks': 'Soft Drinks',
+    'Birre': 'Birre',
+    'Cocktail': 'Cocktail',
+    'Acqua': 'Acqua',
+    'Energy Drink': 'Energy Drink',
+  },
+
+  // Standard Drink translations (optional dynamic fallbacks)
+  'Acqua Naturale': 'Acqua Naturale',
+  'Acqua Frizzante': 'Acqua Frizzante',
+  'Birra alla spina': 'Birra alla spina',
+  'Vino Rosso': 'Vino Rosso',
+  'Vino Bianco': 'Vino Bianco',
 } as const;
 
 export default it;

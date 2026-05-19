@@ -21,8 +21,8 @@ const CATEGORY_EMOJI: Record<string, string> = {
 export function DrinkCard({ drink, onAdd, cartQuantity = 0 }: DrinkCardProps) {
   const { t, i18n } = useTranslation();
   
-  const displayName = translateDbText(drink.name, i18n.language);
-  const displayDescription = translateDbText(drink.description, i18n.language);
+  const displayName = t(translateDbText(drink.name, i18n.language));
+  const displayDescription = drink.description ? t(translateDbText(drink.description, i18n.language)) : '';
 
   return (
     <motion.div

@@ -19,6 +19,7 @@ const EMPTY_FORM: DrinkFormData = {
   image_url: '',
   category: 'Soft Drinks',
   available: true,
+  size: '33 cl',
 };
 
 interface DrinkFormProps {
@@ -73,6 +74,12 @@ function DrinkForm({ initial, onSave, onCancel }: DrinkFormProps) {
         onChange={(e) => set('name', e.target.value)}
         placeholder="Es. Coca Cola"
         required
+      />
+      <Input
+        label="Dimensione / Formato"
+        value={form.size ?? ''}
+        onChange={(e) => set('size', e.target.value)}
+        placeholder="Es. 33 cl, 50 cl, 1 L"
       />
       <Textarea
         label="Descrizione"
@@ -256,7 +263,7 @@ export function DrinkManager() {
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-white text-sm truncate">{drink.name}</p>
                 <p className="text-xs text-white/40 mt-0.5">
-                  {drink.category} · {formatPrice(drink.price)}
+                  {drink.category} · {formatPrice(drink.price)}{drink.size ? ` · ${drink.size}` : ''}
                 </p>
               </div>
               <div className="flex items-center gap-1.5">

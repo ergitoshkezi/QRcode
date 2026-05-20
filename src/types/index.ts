@@ -13,6 +13,7 @@ export interface Drink {
   image_url: string | null;
   category: DrinkCategory;
   available: boolean;
+  size?: string | null;
   created_at: string;
 }
 

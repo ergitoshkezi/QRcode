@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Plus } from 'lucide-react';
+import { Plus, CupSoda } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { formatPrice } from '@/lib/utils';
 import type { Drink } from '@/types';
@@ -56,7 +56,15 @@ export function DrinkCard({ drink, onAdd, cartQuantity = 0 }: DrinkCardProps) {
       </div>
 
       <div className="p-4">
-        <h3 className="font-semibold text-white text-base leading-tight">{drink.name}</h3>
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="font-semibold text-white text-base leading-tight">{drink.name}</h3>
+          {drink.size && (
+            <span className="text-[10px] font-medium text-white/50 bg-white/5 border border-white/8 px-1.5 py-0.5 rounded-lg shrink-0 flex items-center gap-1">
+              <CupSoda size={10} className="text-white/40" />
+              {drink.size}
+            </span>
+          )}
+        </div>
         {drink.description && (
           <p className="mt-1 text-sm text-white/50 line-clamp-2 leading-relaxed">
             {drink.description}
